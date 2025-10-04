@@ -19,7 +19,9 @@ app.use(cors({
         'https://form-generator-frontend.onrender.com',
         'https://form-generator-frontend-*.onrender.com',
         'https://form-generator-frontend-kb06.onrender.com',
+        'https://ai-form-builder-248a.onrender.com',
         /^https:\/\/form-generator-frontend.*\.onrender\.com$/,
+        /^https:\/\/ai-form-builder.*\.onrender\.com$/,
         process.env.FRONTEND_URL
       ].filter(Boolean)
     : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
