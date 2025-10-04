@@ -19,10 +19,13 @@ app.use(cors({
         'https://form-generator-frontend.onrender.com',
         'https://form-generator-frontend-*.onrender.com',
         'https://form-generator-frontend-kb06.onrender.com',
+        /^https:\/\/form-generator-frontend.*\.onrender\.com$/,
         process.env.FRONTEND_URL
       ].filter(Boolean)
     : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Rate limiting (very lenient for development)
@@ -35,6 +38,12 @@ app.use(limiter);
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  next();
+});
 
 // Routes
 app.use('/api/auth', authRoutes);

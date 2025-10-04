@@ -3,6 +3,8 @@ import { supabase } from './supabase'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000'
 
+console.log('API_URL:', API_URL)
+
 const api = axios.create({
   baseURL: `${API_URL}/api`,
   headers: {
@@ -23,6 +25,15 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      message: error.message
+    })
+    
     if (error.response?.status === 401) {
       supabase.auth.signOut()
       window.location.href = '/auth'
