@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Form {
+  id        String   @id @default(uuid())
+  ownerId   String   @map("owner_id")
+  title     String
+  schema    Json
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  versions   FormVersion[]
+  responses  Response[]
+  
+  @@map("forms")
+}
+
+model FormVersion {
+  id           String   @id @default(uuid())
+  formId       String   @map("form_id")
+  schema       Json
+  changePrompt String   @map("change_prompt")
+  createdAt    DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  
+  @@map("form_versions")
+}
+
+model Response {
+  id        String   @id @default(uuid())
+  formId    String   @map("form_id")
+  data      Json
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  
+  @@map("responses")
+}
